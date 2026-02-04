@@ -1,24 +1,84 @@
 <!--
 ========================================================================
-ECHO LANDING PAGE MASTER TEMPLATE v2.0
+ECHO LANDING PAGE MASTER TEMPLATE v2.1
 ANGLE DESK SYSTEM - MULTI-BRAND SPLIT-TEST SYSTEM
 ========================================================================
 
-BRAND CUSTOMIZATION REQUIRED (Lines 3-8, 168-180):
-- Change CSS variables (colors, fonts)
-- Update default headline, subheadline, CTA
-- Update footer branding and links
-- Upload brand images to /public/ folder
+BRAND CUSTOMIZATION GUIDE:
 
-ALL OTHER CODE: Do not modify (universal logic)
+1. CSS VARIABLES (Lines 35-40):
+   --kw-accent: #00e676        (Brand primary color)
+   --kw-accent-text: #0b0f14   (Button text color)
+   --kw-font: ...               (Brand font family)
 
-URL PARAMETERS SUPPORTED:
-Content: ?hl= ?sh= ?cta= ?img= ?link=
-Styles: ?font= ?btn_color= ?btn_text= ?btn_size= ?btn_style= ?hl_size= ?sh_size= ?overlay=
-Triggers: ?social_proof=on ?scarcity=N ?progress=N ?micro_yes=on
-Debug: ?debug=1
+2. DEFAULT CONTENT (Lines 342-346):
+   <h1 id="hl" data-default="[BRAND HEADLINE]" data-default-color="ffffff">
+   <p id="sh" data-default="[BRAND SUBHEADLINE]" data-default-color="ffffff">
+   <a id="cta" data-default="[BRAND CTA]" data-default-href="[BRAND LINK]" href="[BRAND LINK]">
+   <div id="bg" data-default="[BRAND_IMAGE.jpg]">
 
-For documentation: See PKD system guide
+3. PSYCHOLOGICAL TRIGGER DEFAULTS:
+   
+   Line 353: Micro-Yes Checkbox
+   <label data-default="Yes, I want to see how this works">
+   
+   Line 360: Scarcity Message
+   <div id="scarcity" data-default="Only {N} spots remaining today">
+   (Use {N} as placeholder - gets replaced by ?scarcity=3 value)
+   
+   Line 368-370: Social Proof Arrays (comma-separated)
+   data-names="Michael,Sarah,John,..."
+   data-cities="NYC,LA,Chicago,..."
+   data-actions="just started,viewing now,..."
+
+4. FOOTER (Lines 373-380):
+   Brand name, year, legal links
+
+5. IMAGES (Upload to /public/):
+   Desktop: filename.jpg
+   Mobile: filename_mobile.jpg (optional, auto-detected ≤768px)
+
+ALL OTHER CODE: Universal logic - do not modify
+
+URL PARAMETERS:
+
+Content:
+  ?hl=           Headline text
+  ?sh=           Subheadline text
+  ?cta=          Button text
+  ?img=          Image filename
+  ?link=         Destination URL
+
+Styles:
+  ?font=         system|roboto|inter|poppins|arial|georgia
+  ?btn_color=    Button color (hex, no #)
+  ?btn_text=     Button text color (hex, no #)
+  ?btn_size=     small|medium|large|xlarge
+  ?btn_style=    square|rounded|pill|subtle
+  ?hl_size=      Headline size (px)
+  ?sh_size=      Subheadline size (px)
+  ?hl_color=     Headline color (hex, no #)
+  ?sh_color=     Subheadline color (hex, no #)
+  ?overlay=      light|medium|dark|xdark
+  ?overlay_custom= 0.0-1.0 (opacity)
+
+Psychological Triggers:
+  ?social_proof=on      Enable social proof ticker
+  ?social_text=         Override with custom static message
+  ?scarcity=N           Enable scarcity (N = number)
+  ?scarcity_text=       Override with custom message
+  ?progress=N           Show progress (Step N of 3)
+  ?micro_yes=on         Enable micro-commitment checkbox
+  ?micro_text=          Override checkbox label
+
+Testing:
+  ?test_all=1    Enable ALL features instantly (social+scarcity+progress+micro+debug)
+  ?debug=1       Enable console logging only
+
+Mobile:
+  Auto-detects mobile (≤768px) and loads [filename]_mobile.[ext] if exists
+
+For full documentation: See PKD system guide
 ========================================================================
 -->
 
@@ -249,30 +309,25 @@ For documentation: See PKD system guide
   }
 
   #scarcity {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
+    margin-top: 16px;
     background: linear-gradient(135deg, #ff3b3b 0%, #ff6b6b 100%);
     color: white;
     padding: 12px 24px;
     border-radius: 8px;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 700;
-    z-index: 1500;
     box-shadow: 0 6px 16px rgba(255, 59, 59, 0.4);
     display: none;
     animation: urgentPulse 2.5s infinite;
-    pointer-events: none;
   }
 
   @keyframes urgentPulse {
     0%, 100% {
-      transform: translateX(-50%) scale(1);
+      transform: scale(1);
       box-shadow: 0 6px 16px rgba(255, 59, 59, 0.4);
     }
     50% {
-      transform: translateX(-50%) scale(1.03);
+      transform: scale(1.02);
       box-shadow: 0 8px 20px rgba(255, 59, 59, 0.5);
     }
   }
@@ -326,7 +381,7 @@ For documentation: See PKD system guide
     #scarcity {
       font-size: 13px;
       padding: 10px 18px;
-      top: 10px;
+      margin-top: 14px;
     }
     #progress-indicator {
       top: 10px;
@@ -344,22 +399,25 @@ For documentation: See PKD system guide
 <div id="echo-root">
   <div id="echo-overlay"></div>
 
-  <!-- Psychological Triggers (show/hide via URL) -->
-  <div id="scarcity"></div>
+  <!-- Psychological Triggers -->
   <div id="progress-indicator"></div>
   <div id="social-proof"><div id="social-proof-content"></div></div>
 
   <div id="echo-content">
-    <h1 id="hl" data-default="[BRAND HEADLINE]">[BRAND HEADLINE]</h1>
-    <p id="sh" data-default="[BRAND SUBHEADLINE]">[BRAND SUBHEADLINE]</p>
+    <h1 id="hl" data-default="[BRAND HEADLINE]" data-default-color="ffffff">[BRAND HEADLINE]</h1>
+    <p id="sh" data-default="[BRAND SUBHEADLINE]" data-default-color="ffffff">[BRAND SUBHEADLINE]</p>
     
     <!-- Micro-Yes Checkbox (optional) -->
     <div id="micro-yes-container">
       <input type="checkbox" id="micro-yes-checkbox">
-      <label id="micro-yes-label" for="micro-yes-checkbox">Yes, I want to see how this works</label>
+      <label id="micro-yes-label" for="micro-yes-checkbox" data-default="Yes, I want to see how this works">Yes, I want to see how this works</label>
     </div>
 
-    <a id="cta" data-default="[BRAND CTA]" href="[BRAND DEFAULT LINK]">[BRAND CTA]</a>
+    <a id="cta" data-default="[BRAND CTA]" data-default-href="[BRAND DEFAULT LINK]" href="[BRAND DEFAULT LINK]">[BRAND CTA]</a>
+    
+    <!-- Scarcity below CTA -->
+    <div id="scarcity" data-default="Only {N} spots remaining today"></div>
+    
     <div id="bg" data-default="[BRAND_IMAGE.jpg]" style="display:none"></div>
   </div>
 
@@ -374,6 +432,12 @@ For documentation: See PKD system guide
     </div>
   </footer>
 </div>
+
+<!-- Hidden data for social proof defaults (BRAND: Customize these arrays) -->
+<div id="social-proof-data" style="display:none" 
+     data-names="Michael,Sarah,John,Jessica,David,Emily,Chris,Amanda,Ryan,Lisa"
+     data-cities="NYC,LA,Chicago,Miami,Dallas,Seattle,Boston,Austin,Denver,Atlanta"
+     data-actions="just started,viewing now,just signed up,completed step 1"></div>
 
 <script>
 (function () {
@@ -397,6 +461,18 @@ For documentation: See PKD system guide
 
   var params = Object.assign({}, parseParams(window.location.search), parseParams(window.location.hash));
   var DEBUG = params.debug === "1";
+
+  // TEST_ALL MODE: Enable all features for quick testing
+  if (params.test_all === "1") {
+    params.social_proof = "on";
+    params.scarcity = params.scarcity || "3";
+    params.progress = params.progress || "1";
+    params.micro_yes = "on";
+    params.btn_size = params.btn_size || "large";
+    params.overlay = params.overlay || "medium";
+    DEBUG = true;
+    console.log("🧪 TEST_ALL MODE ENABLED - All features activated");
+  }
 
   if (DEBUG) console.log("🔍 DEBUG MODE ENABLED");
   if (DEBUG) console.log("📋 ALL PARAMS:", params);
@@ -480,15 +556,30 @@ For documentation: See PKD system guide
   }
 
   // ============================================
-  // TEXT SIZING
+  // TEXT SIZING & COLORS
   // ============================================
   if (params.hl_size && hlEl) {
     hlEl.style.fontSize = params.hl_size + "px";
     if (DEBUG) console.log("✅ Headline Size:", params.hl_size + "px");
   }
+  if (params.hl_color && hlEl) {
+    hlEl.style.color = "#" + params.hl_color;
+    if (DEBUG) console.log("✅ Headline Color:", params.hl_color);
+  } else if (hlEl && hlEl.getAttribute("data-default-color")) {
+    // Apply brand default color
+    hlEl.style.color = "#" + hlEl.getAttribute("data-default-color");
+  }
+  
   if (params.sh_size && shEl) {
     shEl.style.fontSize = params.sh_size + "px";
     if (DEBUG) console.log("✅ Subheadline Size:", params.sh_size + "px");
+  }
+  if (params.sh_color && shEl) {
+    shEl.style.color = "#" + params.sh_color;
+    if (DEBUG) console.log("✅ Subheadline Color:", params.sh_color);
+  } else if (shEl && shEl.getAttribute("data-default-color")) {
+    // Apply brand default color
+    shEl.style.color = "#" + shEl.getAttribute("data-default-color");
   }
 
   // ============================================
@@ -525,7 +616,7 @@ For documentation: See PKD system guide
     var baseURL = urlParts[0];
     var existingParams = urlParts[1] || "";
     
-    var contentParams = ["hl", "sh", "img", "link", "btn_color", "btn_text", "btn_size", "btn_style", "font", "hl_size", "sh_size", "overlay", "overlay_custom", "social_proof", "scarcity", "progress", "micro_yes", "debug"];
+    var contentParams = ["hl", "sh", "img", "link", "btn_color", "btn_text", "btn_size", "btn_style", "font", "hl_size", "sh_size", "hl_color", "sh_color", "overlay", "overlay_custom", "social_proof", "social_text", "scarcity", "scarcity_text", "progress", "micro_yes", "micro_text", "debug", "test_all"];
     var trackingParams = [];
     
     // AUTO-ADD CTA
@@ -553,20 +644,38 @@ For documentation: See PKD system guide
   }
 
   // ============================================
-  // BACKGROUND IMAGE LOADING
+  // BACKGROUND IMAGE LOADING (with mobile detection)
   // ============================================
   var bgEl = document.getElementById("bg");
   var defaultBg = bgEl ? (bgEl.getAttribute("data-default") || "").trim() : "";
   var chosen = (params.img || defaultBg || "").trim();
 
   if (chosen) {
+    // Check if mobile
+    var isMobile = window.innerWidth <= 768;
+    
     if (/^https?:\/\//i.test(chosen)) {
       root.style.backgroundImage = 'url("' + chosen + '")';
       if (DEBUG) console.log("🖼️ BG Set (full URL):", chosen);
     } else {
       chosen = decodeURIComponent(chosen).replace(/^\/+/, "");
+      
+      // Auto-detect mobile image (using underscore naming)
+      var mobileChosen = chosen;
+      if (isMobile) {
+        var parts = chosen.split(".");
+        var ext = parts.pop();
+        var base = parts.join(".");
+        mobileChosen = base + "_mobile." + ext;
+      }
+      
       var origin = window.location.origin.replace(/\/+$/, "");
-      var candidates = [
+      var candidates = isMobile ? [
+        origin + "/public/" + mobileChosen,
+        origin + "/" + mobileChosen,
+        origin + "/public/" + chosen,
+        origin + "/" + chosen
+      ] : [
         origin + "/public/" + chosen,
         origin + "/" + chosen
       ];
@@ -601,8 +710,16 @@ For documentation: See PKD system guide
   if (params.micro_yes === "on") {
     var microYesContainer = document.getElementById("micro-yes-container");
     var microYesCheckbox = document.getElementById("micro-yes-checkbox");
+    var microYesLabel = document.getElementById("micro-yes-label");
     
     if (microYesContainer && microYesCheckbox && ctaEl) {
+      // Custom text or brand default
+      if (params.micro_text) {
+        microYesLabel.textContent = params.micro_text;
+      } else if (microYesLabel.getAttribute("data-default")) {
+        microYesLabel.textContent = microYesLabel.getAttribute("data-default");
+      }
+      
       microYesContainer.style.display = "flex";
       ctaEl.classList.add("dimmed");
       
@@ -622,26 +739,51 @@ For documentation: See PKD system guide
   if (params.social_proof === "on") {
     var socialProof = document.getElementById("social-proof");
     var socialProofContent = document.getElementById("social-proof-content");
+    var socialProofData = document.getElementById("social-proof-data");
     
     if (socialProof && socialProofContent) {
-      var names = ["Michael", "Sarah", "John", "Jessica", "David", "Emily", "Chris", "Amanda", "Ryan", "Lisa"];
-      var cities = ["NYC", "LA", "Chicago", "Miami", "Dallas", "Seattle", "Boston", "Austin", "Denver", "Atlanta"];
-      var actions = ["just started", "viewing now", "just signed up", "completed step 1"];
-      
-      function showProof() {
-        var name = names[Math.floor(Math.random() * names.length)];
-        var city = cities[Math.floor(Math.random() * cities.length)];
-        var action = actions[Math.floor(Math.random() * actions.length)];
-        socialProofContent.textContent = name + " from " + city + " " + action;
-        socialProof.style.display = "block";
+      // Custom static message via URL
+      if (params.social_text) {
+        function showProof() {
+          socialProofContent.textContent = params.social_text;
+          socialProof.style.display = "block";
+          setTimeout(function() {
+            socialProof.style.display = "none";
+          }, 6000);
+        }
+        setTimeout(showProof, 2000);
+        setInterval(showProof, 12000);
+      } else {
+        // Use brand's custom arrays or defaults
+        var names = ["Michael", "Sarah", "John", "Jessica", "David", "Emily", "Chris", "Amanda", "Ryan", "Lisa"];
+        var cities = ["NYC", "LA", "Chicago", "Miami", "Dallas", "Seattle", "Boston", "Austin", "Denver", "Atlanta"];
+        var actions = ["just started", "viewing now", "just signed up", "completed step 1"];
         
-        setTimeout(function() {
-          socialProof.style.display = "none";
-        }, 6000);
+        if (socialProofData) {
+          var brandNames = socialProofData.getAttribute("data-names");
+          var brandCities = socialProofData.getAttribute("data-cities");
+          var brandActions = socialProofData.getAttribute("data-actions");
+          
+          if (brandNames) names = brandNames.split(",");
+          if (brandCities) cities = brandCities.split(",");
+          if (brandActions) actions = brandActions.split(",");
+        }
+        
+        function showProof() {
+          var name = names[Math.floor(Math.random() * names.length)];
+          var city = cities[Math.floor(Math.random() * cities.length)];
+          var action = actions[Math.floor(Math.random() * actions.length)];
+          socialProofContent.textContent = name + " from " + city + " " + action;
+          socialProof.style.display = "block";
+          
+          setTimeout(function() {
+            socialProof.style.display = "none";
+          }, 6000);
+        }
+        
+        setTimeout(showProof, 2000);
+        setInterval(showProof, 12000);
       }
-      
-      setTimeout(showProof, 2000);
-      setInterval(showProof, 12000);
       
       if (DEBUG) console.log("✅ Social Proof Enabled");
     }
@@ -650,12 +792,21 @@ For documentation: See PKD system guide
   // SCARCITY COUNTER
   if (params.scarcity) {
     var scarcityEl = document.getElementById("scarcity");
-    var slots = parseInt(params.scarcity, 10);
     
-    if (scarcityEl && !isNaN(slots) && slots > 0) {
-      scarcityEl.innerHTML = '<span id="scarcity-icon">⚡</span> Only ' + slots + ' spots remaining today';
+    if (scarcityEl) {
+      // Custom text or default
+      if (params.scarcity_text) {
+        scarcityEl.innerHTML = '<span>⚡</span> ' + params.scarcity_text;
+      } else {
+        var slots = parseInt(params.scarcity, 10);
+        var defaultText = scarcityEl.getAttribute("data-default") || "Only {N} spots remaining today";
+        
+        if (!isNaN(slots) && slots > 0) {
+          scarcityEl.innerHTML = '<span>⚡</span> ' + defaultText.replace("{N}", slots);
+        }
+      }
       scarcityEl.style.display = "block";
-      if (DEBUG) console.log("✅ Scarcity Enabled:", slots + " spots");
+      if (DEBUG) console.log("✅ Scarcity Enabled");
     }
   }
 
